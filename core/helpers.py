@@ -25,20 +25,6 @@ def get_session_instance(request):
     return Session.objects.get(session_key=request.session.session_key)
 
 
-def create_url_instance(request, data):
-    url_subpart = data.get('url_subpart', '')
-    while not url_subpart:
-        url_subpart = get_random_string()
-        if Url.objects.filter(url_subpart=url_subpart).count() > 0:
-            url_subpart = ''
-    url = Url.objects.create(
-        original_url=data['original_url'],
-        url_subpart=url_subpart,
-        session=get_session_instance(request)
-    )
-    return url
-
-
 def get_redirect_url(url_subpart):
     try:
         url = redis_client.get(url_subpart)
